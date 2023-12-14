@@ -7,13 +7,16 @@ from time import sleep
 
 ADD_TO_CART = (By.CSS_SELECTOR, "[id*='85978614'][class*='styles__StyledBaseButtonInternal']")
 SIDE_NAV_PRODUCT_NAME = (By.CSS_SELECTOR, "h4[class*='StyleHeading']")
-CART_SUMMARY = (By.CSS_SELECTOR, "[class*='styles__CartSummarySpan']")
+LISTINGS = (By.CSS_SELECTOR, "[data-test='@web/site-top-of-funnel/ProductCardWrapper']")
+PRODUCT_TITLE = (By.CSS_SELECTOR, "[data-test='product-title']")
+PRODUCT_IMG = (By.CSS_SELECTOR, "[class*='ProductCardImage']")
 
 
 @when('Click add to cart button')
 def add_to_cart(context):
     context.driver.find_element(*ADD_TO_CART).click()
-
+    # all_buttons = context.driver.find_elements(*ADD_TO_CART_BTN)
+    # all_buttons[2].click()
 
 
 @when('Store product name')
@@ -25,13 +28,25 @@ def store_product_name(context):
     context.product_name = context.driver.find_element(*SIDE_NAV_PRODUCT_NAME).text
 
 
-@then('Verify search worked for {search_result}')
-def verify_search(context, search_result):
-    search_results_header = context.driver.find_element(By.CSS_SELECTOR, "[data-test='resultsHeading']").text
-    assert search_result in search_results_header, f'Expected text {search_result} not in {search_results_header}'
+@then('Verify search worked for {product}')
+def verify_search(context, product):
+    context.app.search_results_page.verify_search_result(product)
 
 
 @then('Verify {expected_keyword} in search result url')
 def verify_search_url(context, expected_keyword):
-    assert expected_keyword in context.driver.current_url, \
-        f'Expected {expected_keyword} not in {context.driver.current_url}'
+    context.app.search_results_page.verify_search_url(expected_keyword)
+
+
+@then('Verify that every product has a name and an image')
+def verify_products_name_img(context):
+    context.driver.execute_script("window.scrollBy(0,2000)", "")
+    sleep(6)
+    context.driver.execute_script("window.scrollBy(0,2000)", "")
+
+    all_products = context.driver.find_elements(*LISTINGS)
+    for product in all_products:
+        title = product.find_element(*PRODUCT_TITLE).text
+        print(title)
+        assert title, 'Product title not shown'
+        product.find_element(*PRODUCT_IMG)

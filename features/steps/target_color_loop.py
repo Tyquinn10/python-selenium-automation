@@ -7,9 +7,9 @@ PANTS_COLORS = (By.CSS_SELECTOR, "[class*='ButtonWrapper'] img")
 SELECTED_COLOR = (By.CSS_SELECTOR, "[class*='StyledVariationSelectorImage'] [class*='CellVariationHeaderWrapper']")
 
 
-@given('Open target product A-89191279 page')
-def open_target(context):
-    context.driver.get('https://www.target.com/p/A-89191279 ')
+@given('Open target product {product_id} page')
+def open_target(context, product_id):
+    context.driver.get(f'https://www.target.com/p/{product_id}')
     sleep(10)
 
 

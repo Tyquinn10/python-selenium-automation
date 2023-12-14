@@ -3,9 +3,6 @@ from behave import given, when, then
 from time import sleep
 
 
-
-
-
 @then('Verify sign in form opened')
 def sign_in_form(context):
     expected = 'Sign into your Target account'
